@@ -1,33 +1,78 @@
-import React from 'react';
-import grassTile from '../../assets/tiles/grass.png';
+import React, { useEffect, useState } from 'react';
+import grassTile from '../../assets/tiles/grass.jpg';
+import lakeTile from '../../assets/tiles/lake.jpg';
+import mountainTile from '../../assets/tiles/mountain.jpg';
+import swampTile from '../../assets/tiles/swamp.jpg';
+import { generateLandscape } from '../../utils/landscapeGenerator';
 
 const GRID_SIZE = 7;
 
 const GameBoard = () => {
-  const spiralMatrix = [
-    [43, 42, 41, 40, 39, 38, 37],
-    [44, 21, 20, 19, 18, 17, 36],
-    [45, 22,  7,  6,  5, 16, 35],
-    [46, 23,  8,  1,  4, 15, 34],
-    [47, 24,  9,  2,  3, 14, 33],
-    [48, 25, 10, 11, 12, 13, 32],
-    [49, 26, 27, 28, 29, 30, 31]
-  ];
+  const [landscapeGrid, setLandscapeGrid] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    try {
+      console.log('Generating landscape...');
+      const grid = generateLandscape(GRID_SIZE);
+      console.log('Generated grid:', grid);
+      setLandscapeGrid(grid);
+    } catch (err) {
+      console.error('Error generating landscape:', err);
+      setError(err.message);
+    }
+  }, []);
+
+  const getTileImage = (typeID) => {
+    try {
+      console.log('Getting tile image for type:', typeID);
+      switch (typeID) {
+        case 1:
+          return grassTile;
+        case 2:
+          return lakeTile;
+        case 3:
+          return mountainTile;
+        case 4:
+          return swampTile;
+        default:
+          return grassTile;
+      }
+    } catch (err) {
+      console.error('Error getting tile image:', err);
+      return grassTile;
+    }
+  };
+
+  if (error) {
+    return <div className="error">Error: {error}</div>;
+  }
+
+  if (!landscapeGrid) {
+    return <div className="loading">Loading...</div>;
+  }
 
   return (
     <div className="gameboard">
       <div className="grid-container">
-        {spiralMatrix.map((row, rowIndex) => (
+        {landscapeGrid.map((row, rowIndex) => (
           <div key={rowIndex} className="grid-row">
-            {row.map((value, colIndex) => (
-              <div 
-                key={`${rowIndex}-${colIndex}`} 
-                className="grid-cell"
-                style={{ backgroundImage: `url(${grassTile})` }}
-              >
-                {value}
-              </div>
-            ))}
+            {row.map((tileType, colIndex) => {
+              const tileImage = getTileImage(tileType);
+              return (
+                <div 
+                  key={`${rowIndex}-${colIndex}`} 
+                  className="grid-cell"
+                  style={{ 
+                    backgroundImage: `url(${tileImage})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
+                  }}
+                >
+                  <span className="tile-number">{rowIndex * GRID_SIZE + colIndex + 1}</span>
+                </div>
+              );
+            })}
           </div>
         ))}
       </div>

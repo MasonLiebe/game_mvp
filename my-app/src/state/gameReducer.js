@@ -39,6 +39,35 @@ export const initialState = {
   }
 };
 
+// landscape probability constants
+export const mountainRangeCountProbability = {
+  0: 0.1,
+  1: 0.4,
+  2: 0.3,
+  3: 0.2
+};
+
+export const mountainRangeLengthProbability = {
+  2: 0.2,
+  3: 0.5,
+  4: 0.3
+};
+
+export const lakeCountProbability = {
+  1: 0.1,
+  2: 0.3,
+  3: 0.3,
+  3: 0.1,
+  4: 0.1,
+  5: 0.05
+};
+
+export const swampCountProbability = {
+  0: 0.4,
+  1: 0.3,
+  2: 0.3,
+};
+
 // Reducer
 export const gameReducer = (state, action) => {
   switch (action.type) {
