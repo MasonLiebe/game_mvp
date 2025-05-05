@@ -6,16 +6,24 @@ import Policies from '../UIContainer/Policies';
 import GameBoard from '../GameBoard/GameBoard';
 import Stats from '../UIContainer/Stats';
 import Consumables from '../UIContainer/Consumables';
+import Store from '../UIContainer/Store';
 
 const MainLayout = () => {
   return (
     <div className="game-container">
       <TopBar />
-      <Essences />
-      <Policies />
-      <GameBoard />
-      <Stats />
-      <Consumables />
+      <div className="left-column">
+        <Policies />
+        <Essences />
+      </div>
+      <div className="middle-column">
+        <GameBoard />
+        <Store />
+      </div>
+      <div className="right-column">
+        <Stats />
+        <Consumables />
+      </div>
     </div>
   );
 };
