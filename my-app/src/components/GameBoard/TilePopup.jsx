@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './GameBoard.module.css';
 
-const TilePopup = ({ tile, position, onClose }) => {
+const TilePopup = ({ tile, position, onClose, isHovered }) => {
   if (!tile) return null;
 
   const renderProperty = (label, value, condition = true) => {
@@ -16,15 +16,15 @@ const TilePopup = ({ tile, position, onClose }) => {
 
   return (
     <div 
-      className={styles.tilePopup}
+      className={`${styles.tilePopup} ${isHovered ? styles.hovered : ''}`}
       style={{
         position: 'fixed',
         left: `${position.x}px`,
         top: `${position.y}px`,
-        transform: 'translate(-50%, -50%)'
+        transform: 'translateY(-50%)'
       }}
     >
-      <button className={styles.closeButton} onClick={onClose}>×</button>
+      {!isHovered && <button className={styles.closeButton} onClick={onClose}>×</button>}
       <div className={styles.tileInfo}>
         <h3>Tile {tile.tile_number}</h3>
         <div className={styles.tileProperties}>

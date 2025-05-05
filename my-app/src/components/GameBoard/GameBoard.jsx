@@ -8,13 +8,16 @@ import styles from './GameBoard.module.css';
 import TilePopup from './TilePopup';
 
 const GRID_SIZE = 7;
+const HOVER_DELAY = 200; // 2 seconds
 
 const GameBoard = () => {
   const [landscapeGrid, setLandscapeGrid] = useState(null);
   const [selectedTile, setSelectedTile] = useState(null);
+  const [hoveredTile, setHoveredTile] = useState(null);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
   const [error, setError] = useState(null);
   const gameboardRef = useRef(null);
+  const hoverTimerRef = useRef(null);
 
   useEffect(() => {
     try {
@@ -41,18 +44,51 @@ const GameBoard = () => {
     }
   };
 
-  const handleTileClick = (tile, event) => {
-    if (selectedTile === tile) {
-      setSelectedTile(null);
-      return;
-    }
-
+  const updatePopupPosition = (event) => {
     const rect = event.currentTarget.getBoundingClientRect();
     setPopupPosition({
-      x: rect.left + rect.width / 2,
+      x: rect.right + 20,
       y: rect.top + rect.height / 2
     });
-    setSelectedTile(tile);
+  };
+
+  const handleTileClick = (tile, event) => {
+    updatePopupPosition(event);
+
+    // Set a new timer for hover delay
+    hoverTimerRef.current = setTimeout(() => {
+      if (!selectedTile) { // Only show hover popup if no tile is selected
+        setHoveredTile(tile);
+      }
+    }, HOVER_DELAY);
+  };
+
+  const handleTileHover = (tile, event) => {
+    updatePopupPosition(event);
+    
+    // Clear any existing timer
+    if (hoverTimerRef.current) {
+      clearTimeout(hoverTimerRef.current);
+    }
+
+    // Set a new timer for hover delay
+    hoverTimerRef.current = setTimeout(() => {
+      if (!selectedTile) { // Only show hover popup if no tile is selected
+        setHoveredTile(tile);
+      }
+    }, HOVER_DELAY);
+  };
+
+  const handleTileLeave = () => {
+    // Clear the hover timer
+    if (hoverTimerRef.current) {
+      clearTimeout(hoverTimerRef.current);
+    }
+    
+    // Only clear hovered tile if no tile is selected
+    if (!selectedTile) {
+      setHoveredTile(null);
+    }
   };
 
   const handleClosePopup = () => {
@@ -119,6 +155,8 @@ const GameBoard = () => {
                   backgroundPosition: 'center'
                 }}
                 onClick={(e) => handleTileClick(tile, e)}
+                onMouseEnter={(e) => handleTileHover(tile, e)}
+                onMouseLeave={handleTileLeave}
               >
                 <span className={styles.tileNumber}>{tile.tile_number}</span>
               </div>
@@ -127,11 +165,12 @@ const GameBoard = () => {
         ))}
       </div>
       
-      {selectedTile && (
+      {(selectedTile || hoveredTile) && (
         <TilePopup 
-          tile={selectedTile}
+          tile={selectedTile || hoveredTile}
           position={popupPosition}
           onClose={handleClosePopup}
+          isHovered={!!hoveredTile}
         />
       )}
     </div>
