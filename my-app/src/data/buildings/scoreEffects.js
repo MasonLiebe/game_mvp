@@ -1,0 +1,3 @@
+/*
+This file contains the effect functions that will run when a building is scored.
+*/

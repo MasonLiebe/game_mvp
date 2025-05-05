@@ -22,6 +22,11 @@
   gap: 0.5rem;
 }
 
+.store {
+  max-width: 800px;
+  width: 100%;
+}
+
 button {
   padding: 0.5rem 1rem;
   background-color: var(--accent-color);
