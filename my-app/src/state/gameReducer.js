@@ -54,12 +54,11 @@ export const mountainRangeLengthProbability = {
 };
 
 export const lakeCountProbability = {
-  1: 0.1,
+  1: 0.2,
   2: 0.3,
-  3: 0.3,
-  3: 0.1,
-  4: 0.1,
-  5: 0.05
+  3: 0.25,
+  4: 0.15,
+  5: 0.1
 };
 
 export const swampCountProbability = {

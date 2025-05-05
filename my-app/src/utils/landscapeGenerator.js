@@ -4,6 +4,7 @@ import {
   lakeCountProbability,
   swampCountProbability 
 } from '../state/gameReducer';
+import { generateSpiralMatrix } from './spiralMatrix';
 
 // Helper function to choose a value based on probability distribution
 const chooseFromProbability = (probabilityMap) => {
@@ -82,20 +83,64 @@ const generateSwamps = (gridSize) => {
   return swamps;
 };
 
+// Generate random tile properties
+const generateTileProperties = (tileNumber, type) => {
+  const landscapeTypes = {
+    1: "Grass",
+    2: "Lake",
+    3: "Mountain",
+    4: "Swamp"
+  };
+
+  return {
+    tile_number: tileNumber,
+    type: type,
+    landscape: landscapeTypes[type],
+    citizens: 0,
+    vitality_add: "0.00",
+    civics_add: "0.00",
+    enlightenment_add: "0.00",
+    defense_add: "0.00",
+    industry_add: "0.00",
+    vitality_mult: "1.00",
+    civics_mult: "1.00",
+    enlightenment_mult: "1.00",
+    defense_mult: "1.00",
+    industry_mult: "1.00",
+    building_id: 0,
+    building_level: 0,
+    tile_buff: "None"
+  };
+};
+
 // Main function to generate landscape
 export const generateLandscape = (gridSize) => {
   const mountainRanges = generateMountainRanges(gridSize);
   const lakes = generateLakes(gridSize);
   const swamps = generateSwamps(gridSize);
+  const spiralMatrix = generateSpiralMatrix(gridSize);
   
-  // Create a grid to store tile types
-  const grid = Array(gridSize).fill().map(() => Array(gridSize).fill(1)); // 1 = grass
+  // Create a grid to store tile objects
+  const grid = Array(gridSize).fill().map(() => Array(gridSize).fill(null));
+  
+  // Initialize all tiles with grass type and properties
+  for (let y = 0; y < gridSize; y++) {
+    for (let x = 0; x < gridSize; x++) {
+      grid[y][x] = {
+        type: 1, // 1 = grass
+        ...generateTileProperties(spiralMatrix[y][x], 1)
+      };
+    }
+  }
   
   // Place mountain ranges
   mountainRanges.forEach(range => {
     range.forEach(({ x, y }) => {
       if (x >= 0 && x < gridSize && y >= 0 && y < gridSize) {
-        grid[y][x] = 3; // 3 = mountain
+        grid[y][x] = {
+          type: 3, // 3 = mountain
+          ...generateTileProperties(grid[y][x].tile_number, 3)
+        };
       }
     });
   });
@@ -103,14 +148,20 @@ export const generateLandscape = (gridSize) => {
   // Place lakes
   lakes.forEach(({ x, y }) => {
     if (x >= 0 && x < gridSize && y >= 0 && y < gridSize) {
-      grid[y][x] = 2; // 2 = lake
+      grid[y][x] = {
+        type: 2, // 2 = lake
+        ...generateTileProperties(grid[y][x].tile_number, 2)
+      };
     }
   });
   
   // Place swamps
   swamps.forEach(({ x, y }) => {
     if (x >= 0 && x < gridSize && y >= 0 && y < gridSize) {
-      grid[y][x] = 4; // 4 = swamp
+      grid[y][x] = {
+        type: 4, // 4 = swamp
+        ...generateTileProperties(grid[y][x].tile_number, 4)
+      };
     }
   });
   
