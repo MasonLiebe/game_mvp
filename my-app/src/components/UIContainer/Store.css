@@ -1,0 +1,50 @@
+.store {
+  padding: 1rem;
+  background-color: #2c3e50;
+  border-radius: 8px;
+  color: white;
+  width: 100%;
+}
+
+.store h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.store-slots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  padding: 0 1rem;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.store-slot {
+  background-color: #34495e;
+  padding: 0.75rem;
+  border-radius: 6px;
+  width: 120px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.building-sprite {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin-bottom: 0.5rem;
+}
+
+.building-info h3 {
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+}
+
+.building-info p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #95a5a6;
+} 

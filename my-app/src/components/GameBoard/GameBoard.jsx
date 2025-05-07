@@ -4,6 +4,7 @@ import lakeTile from '../../assets/tiles/lake.jpg';
 import mountainTile from '../../assets/tiles/mountain.jpg';
 import swampTile from '../../assets/tiles/swamp.jpg';
 import { generateLandscape } from '../../utils/landscapeGenerator';
+import { buildings } from '../../data/buildings/building_data';
 import styles from './GameBoard.module.css';
 import TilePopup from './TilePopup';
 
@@ -42,6 +43,33 @@ const GameBoard = () => {
       default:
         return grassTile;
     }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = (e, tile) => {
+    e.preventDefault();
+    const buildingId = parseInt(e.dataTransfer.getData('buildingId'));
+    
+    // Update the landscape grid with the new building
+    setLandscapeGrid(prevGrid => {
+      const newGrid = prevGrid.map(row => 
+        row.map(t => {
+          if (t === tile) {
+            return {
+              ...t,
+              building_id: buildingId,
+              building_level: 1
+            };
+          }
+          return t;
+        })
+      );
+      return newGrid;
+    });
   };
 
   const updatePopupPosition = (event) => {
@@ -157,8 +185,17 @@ const GameBoard = () => {
                 onClick={(e) => handleTileClick(tile, e)}
                 onMouseEnter={(e) => handleTileHover(tile, e)}
                 onMouseLeave={handleTileLeave}
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, tile)}
               >
-                <span className={styles.tileNumber}>{tile.tile_number}</span>
+                {/* <span className={styles.tileNumber}>{tile.tile_number}</span> */}
+                {tile.building_id !== 0 && (
+                  <img 
+                    src={`/src/assets/buildings/${buildings.find(b => b.id === tile.building_id).sprite_file}`}
+                    alt="Building"
+                    className={styles.buildingSprite}
+                  />
+                )}
               </div>
             ))}
           </div>
