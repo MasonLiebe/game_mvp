@@ -13,7 +13,6 @@ const Store = () => {
 
   return (
     <div className="store">
-      <h2>Store</h2>
       <div className="store-slots">
         {buildingSlots.map((buildingId, index) => {
           const building = buildings.find(b => b.id === buildingId);
